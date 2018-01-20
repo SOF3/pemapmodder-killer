@@ -1,0 +1,6 @@
+name: pemapmodder-killer
+description: A shitty plugin that only works on the map in PEMapModder's avatar. Is anybody even gonna use this?
+version: 2013.10.2
+api: 3.0.0-ALPHA10
+author: [PEMapModder, "=?=", SOFe]
+main: ShouldThisBe\PEMapModder\OrIsIt\SOFe\Killer\Main
