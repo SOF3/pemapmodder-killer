@@ -124,17 +124,29 @@ class Main extends PluginBase implements Listener{
 		$event->setCancelled();
 		if(Settings::isCriticalBlock($event->getBlock())){
 			foreach($this->teams as $team){
-				if($team->hasPlayer($event->getPlayer())){
-					$chunk = Settings::block2chunk($event->getBlock());
-					$index = Settings::chunk2index($chunk);
-					if((++$this->clickTimes[$index]) >= Settings::BLOCK_CLICK_LIMIT){
-						$this->clickTimes[$index] = 0;
-						$this->setChunk($chunk->x, $chunk->y, $team->getId());
+				if(!$team->hasPlayer($event->getPlayer())){
+					continue;
+				}
+				$chunk = Settings::block2chunk($event->getBlock());
+				$index = Settings::chunk2index($chunk);
+				$teamId = $team->getId();
+				if($teamId === $this->map[$index] ||
+					($index >= Settings::TOTAL_CHUNK_COUNT_ROOT && $teamId === $this->map[$index - Settings::TOTAL_CHUNK_COUNT_ROOT]) ||
+					($index >= 1 && $teamId === $this->map[$index - 1]) ||
+					($index + Settings::TOTAL_CHUNK_COUNT_ROOT < Settings::TOTAL_CHUNK_COUNT && $teamId === $this->map[$index + Settings::TOTAL_CHUNK_COUNT_ROOT]) ||
+					($index + 1 < Settings::TOTAL_CHUNK_COUNT && $teamId === $this->map[$index + 1])
+				){
+					if($this->clickTimes[$index][0] !== $teamId){
+						$this->clickTimes[$index] = [$teamId, 0];
+					}
+					if((++$this->clickTimes[$index][1]) >= Settings::BLOCK_CLICK_LIMIT){
+						$this->clickTimes[$index] = [0, 0];
+						$this->setChunk($chunk->x, $chunk->y, $teamId);
 						/** @noinspection NullPointerExceptionInspection */
 						$event->getBlock()->getLevel()->setBlock($event->getBlock(), $team->getBlock());
 					}
-					break;
 				}
+				break;
 			}
 		}
 	}
