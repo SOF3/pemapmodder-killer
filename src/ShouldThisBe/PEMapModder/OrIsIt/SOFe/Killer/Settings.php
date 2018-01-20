@@ -23,10 +23,12 @@ declare(strict_types=1);
 namespace ShouldThisBe\PEMapModder\OrIsIt\SOFe\Killer;
 
 use pocketmine\block\Block;
+use pocketmine\item\Item;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
+use pocketmine\Player;
 use pocketmine\Server;
 
 class Settings{
@@ -85,5 +87,13 @@ class Settings{
 
 	public static function isCriticalBlock(Block $block) : bool{
 		return $block->getId() === Block::WOOL;
+	}
+
+	public static function equip(Player $player) : void{
+		$player->getInventory()->addItem(Item::get(Item::IRON_SWORD), Item::get(Item::BOW), Item::get(Item::ARROW, 64));
+		$player->getInventory()->setArmorItem(0, Item::get(Item::CHAIN_HELMET));
+		$player->getInventory()->setArmorItem(1, Item::get(Item::CHAIN_CHESTPLATE));
+		$player->getInventory()->setArmorItem(2, Item::get(Item::CHAIN_LEGGINGS));
+		$player->getInventory()->setArmorItem(3, Item::get(Item::CHAIN_BOOTS));
 	}
 }

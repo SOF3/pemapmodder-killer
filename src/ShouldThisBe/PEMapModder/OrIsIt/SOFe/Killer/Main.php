@@ -38,6 +38,7 @@ use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerChatEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
+use pocketmine\event\player\PlayerRespawnEvent;
 use pocketmine\level\Position;
 use pocketmine\plugin\PluginBase;
 
@@ -88,6 +89,7 @@ class Main extends PluginBase implements Listener{
 		$event->setJoinMessage("{$player} joined Team {$team->getName()}!");
 		$team->addPlayer($player);
 		$player->teleport($this->spawnCache[$team->getId()]);
+		Settings::equip($player);
 	}
 
 	public function e_onQuit(PlayerQuitEvent $event){
@@ -95,6 +97,16 @@ class Main extends PluginBase implements Listener{
 			if($team->hasPlayer($event->getPlayer())){
 				$team->removePlayer($event->getPlayer());
 				$event->setQuitMessage("{{$team->getName()}} {$event->getPlayer()} left!");
+			}
+		}
+	}
+
+	public function e_onRespawn(PlayerRespawnEvent $event){
+		foreach($this->teams as $team){
+			if($team->hasPlayer($player = $event->getPlayer())){
+				$event->setRespawnPosition($this->spawnCache[$team->getId()]);
+				Settings::equip($player);
+				break;
 			}
 		}
 	}
@@ -184,6 +196,7 @@ class Main extends PluginBase implements Listener{
 				$this->spawnCache[$id] = $pos = $this->findSpawn($id);
 				if($pos === null){
 					$team->lose();
+					$this->getServer()->broadcastMessage("{$team->getName()} has been destroyed!");
 				}
 			}
 		}
