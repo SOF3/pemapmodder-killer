@@ -1,2 +1,2 @@
 # pemapmodder-killer
-A shitty plugin that only works on the map in PEMapModder's avatar. Is anybody even gonna use this?
+A useless plugin that only works on the map in PEMapModder's avatar. Is anybody even gonna use this?
